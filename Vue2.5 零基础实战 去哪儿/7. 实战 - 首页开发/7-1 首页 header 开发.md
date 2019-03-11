@@ -26,7 +26,7 @@ npm run dev
 
 ```shell
 cnpm istall node-sass --save
-cnpm istall sass-loader --save
+cnpm istall sass-loader --save 
 ```
 
 
