@@ -1,4 +1,67 @@
+# 零、引入
+
+众所周知，在 JavaScript 的世界里，所有代码都是单线程执行的。由于这个原因，使得 JavaScript 所有的网络操作、浏览器事件，都得是异步执行的。
+
+异步执行可以用一个回调函数实现：
+
+```js
+function callback () {
+  console.log('执行完成');
+}
+
+console.log('调用之前');
+setTimeout(callback, 1000);// 1s 之后调用 callback()
+console.log('调用之后');
+```
+
+然后我们可以在控制台中看到：
+
+```
+调用之前
+调用之后
+--- 1s 延迟 ---
+执行完成
+```
+
+可见，异步操作会在定时器过期后触发函数调用。
+
+我们看一下使用异步操作的 AJAX：
+
+```js
+request.onReadyStateChange = function () {
+  if (request.readyState === 4) {
+    if (request.status === 200) {
+      return success(request.responseText)
+    } else {
+      return fail(request.status)
+    }
+  }
+}
+```
+
+把回调函数 `success(request.responseText)` 和 `fail(request.status)` 写到一个 AJAX 操作里很正常，但不好看，不利于代码复用。
+
+我们来优化一下写法：
+
+```js
+var ajax = ajaxGet('http://...');
+ajax.ifSuccess(success)
+	.ifFail(fail);
+```
+
+这种链式写法，不关心执行结果，先执行逻辑再说，然后根据执行结果调用相对应的函数。
+
+这种 “承诺将来会执行” 的对象在 JavaScript 中被称为 `Promise` 对象。
+
+`Promise` 是异步编程的一种解决方案，比起上面的 “回调函数和事件” 的传统解决方案要更为简洁合理。所谓的 `Promise` 就是一个容器，里面存放着某个未来才会结束的事件（一般是一个异步操作）。从语法上看，它是一个对象，可以获取异步操作的消息。
+
+
+
+
+
 # 一、Promise
+
+
 
 `Promise` 对象用于表示一个异步操作的最终状态（完成或失败），以及其返回的值。
 
